@@ -8,43 +8,40 @@
       debug:
         msg: "Building Catalog Source"
 
-#    - name: Cleaning up manifest dir
-#      file:
-#        path: "{{ inventory_dir }}/{{ appregistry_org }}" 
-#        state: absent
-
-#    - name: Get all manifests
-#      command: >-
-#        oc adm catalog build 
-#          --appregistry-endpoint {{ appregistry_endpoint }} 
-#          --appregistry-org {{ appregistry_org }} 
-#          --manifest-dir="{{ inventory_dir }}/{{ appregistry_org }}"
-
     - name: Cleaning up manifest dir
       file:
-        path: "{{ inventory_dir }}/{{ appregistry_org }}/manifests"
-        state: directory 
-
-    - name: Move manifests to common folder
-      command: >-
-        mv {{ item }}/* {{ inventory_dir }}/{{ appregistry_org }}/manifests
-      with_fileglob:
-        - "{{ inventory_dir }}/{{ appregistry_org }}/manifests-*"
-
-    - name: Find all Catalog sources to delete
-      find:
-        paths: "{{ inventory_dir }}/filtered-manifests"
-        recurse: no
-        file_type: directory
-        excludes: "3scale-operator,datagrid"
-      register: operators_to_delete
-
-    - name: Delete Catalog sources not needed
-      file:
-        path: "{{ item.path }}"
+        path: "{{ item }}" 
         state: absent
+      with_items:
+        - "{{ inventory_dir }}/{{ appregistry_org }}"
+        - "{{ inventory_dir }}/filtered-manifests"
+
+    - name: Get all manifests
+      command: >-
+        oc adm catalog build 
+          --appregistry-endpoint {{ appregistry_endpoint }} 
+          --appregistry-org {{ appregistry_org }} 
+          --manifest-dir="{{ inventory_dir }}/{{ appregistry_org }}"
+
+    - name: Find Operators to deploy
+      find:
+        paths: "{{ inventory_dir }}/{{ appregistry_org }}"
+        recurse: yes
+        file_type: directory
+        patterns: ["3scale-operator","datagrid"]
+      register: operators_to_deploy
+
+    - name: Create the manifest dir
+      file:
+        path: "{{ inventory_dir }}/filtered-manifests"
+        state: directory
+
+    - name: Copy Operators to deploy 
+      copy:
+        src: "{{ item.path }}"
+        dest: "{{ inventory_dir }}/filtered-manifests"
       with_items: 
-        - "{{ operators_to_delete.files }}"
+        - "{{ operators_to_deploy.files }}"
 
     - name: Build the Catalog Registry Image
       podman_image:

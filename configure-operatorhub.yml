@@ -12,15 +12,14 @@
       command: >-
         oc apply -f "{{ inventory_dir }}/copied-manifests"
 
+    - name: Fill the CatalogSource template
+      template:
+        src: "{{ inventory_dir }}/templates/catalogsource.yml.j2"
+        dest: "{{ inventory_dir }}/catalogsource.yml"
+
     - name: Create a CatalogSource object that references our catalog image
-      k8s:
-        state: present
-        merge_type:
-          - strategic-merge
-          - merge
-        definition: "{{ lookup('template', item ) | from_yaml }}"
-      loop:
-        - "{{ inventory_dir }}/templates/catalogsource.yml.j2"
+      command: >-
+        oc apply -f {{ inventory_dir }}/catalogsource.yml 
 
     # Leave this as the last task in the playbook.
     - name: tasks complete
