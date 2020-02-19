@@ -8,24 +8,47 @@
       debug:
         msg: "Building Catalog Source"
 
-    - name: Get all manifests
+#    - name: Cleaning up manifest dir
+#      file:
+#        path: "{{ inventory_dir }}/{{ appregistry_org }}" 
+#        state: absent
+
+#    - name: Get all manifests
+#      command: >-
+#        oc adm catalog build 
+#          --appregistry-endpoint {{ appregistry_endpoint }} 
+#          --appregistry-org {{ appregistry_org }} 
+#          --manifest-dir="{{ inventory_dir }}/{{ appregistry_org }}"
+
+    - name: Cleaning up manifest dir
+      file:
+        path: "{{ inventory_dir }}/{{ appregistry_org }}/manifests"
+        state: directory 
+
+    - name: Move manifests to common folder
       command: >-
-        oc adm catalog build 
-          --appregistry-endpoint {{ appregistry_endpoint }} 
-          --appregistry-org {{ appregistry_org }} 
-          --manifest-dir="{{ inventory_dir }}/{{ appregistry_org }}-manifests"
+        mv {{ item }}/* {{ inventory_dir }}/{{ appregistry_org }}/manifests
+      with_fileglob:
+        - "{{ inventory_dir }}/{{ appregistry_org }}/manifests-*"
 
     - name: Find all Catalog sources to delete
       find:
-        paths: "{{ inventory_dir }}/{{ appregistry_org }}-manifests"
+        paths: "{{ inventory_dir }}/{{ appregistry_org }}/manifests-274724176"
         recurse: no
         file_type: directory
-        excludes: '3scale-operator,datagrid'
+        excludes: "3scale-operator,datagrid"
       register: operators_to_delete
+
+    - name: Delete Catalog sources not needed
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: 
+        - "{{ operators_to_delete.files }}"
 
     - name: tasks complete
       debug:
-        msg: "LOG >> {{ operators_to_delete }}"
+        msg: "LOG >> {{ operators_to_delete.files }}"
 
     # Leave this as the last task in the playbook.
     - name: tasks complete
