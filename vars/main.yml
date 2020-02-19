@@ -1,0 +1,2 @@
+appregistry_endpoint: "https://quay.io/cnr"
+appregistry_org: "redhat-operators"

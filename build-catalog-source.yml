@@ -1,6 +1,8 @@
 ---
 - name: Download Openshift Operators
   hosts: localhost
+  vars_files:
+    vars/main.yml
   tasks:
     - name: Setting up workload for user
       debug:
@@ -12,9 +14,6 @@
           --appregistry-endpoint {{ appregistry_endpoint }} 
           --appregistry-org {{ appregistry_org }} 
           --manifest-dir="{{ inventory_dir }}/{{ appregistry_org }}-manifests"
-      vars:
-        appregistry_endpoint: "https://quay.io/cnr"
-        appregistry_org: "redhat-operators"
 
     - name: Find all Catalog sources to delete
       find:
