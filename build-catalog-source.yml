@@ -7,7 +7,11 @@
         msg: "Building Catalog Source"
 
     - name: Get the manifests
-      command: "oc adm catalog build --appregistry-endpoint {{ appregistry_endpoint }} --appregistry-org {{ appregistry_org }} --manifest-dir={{ appregistry_org }} manifests"
+      command: >-
+        oc adm catalog build 
+          --appregistry-endpoint {{ appregistry_endpoint }} 
+          --appregistry-org {{ appregistry_org }} 
+          --manifest-dir={{ appregistry_org }}-manifests
       vars:
         appregistry_endpoint: "https://quay.io/cnr"
         appregistry_org: "redhat-operators"
@@ -16,4 +20,3 @@
     - name: tasks complete
       debug:
         msg: "Build Catalog Source Tasks completed successfully."
-      when: not silent|bool
