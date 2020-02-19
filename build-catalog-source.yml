@@ -11,7 +11,7 @@
         oc adm catalog build 
           --appregistry-endpoint {{ appregistry_endpoint }} 
           --appregistry-org {{ appregistry_org }} 
-          --manifest-dir={{ appregistry_org }}-manifests
+          --manifest-dir={{ inventory_dir }}/{{ appregistry_org }}-manifests
       vars:
         appregistry_endpoint: "https://quay.io/cnr"
         appregistry_org: "redhat-operators"
