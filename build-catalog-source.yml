@@ -21,6 +21,11 @@
         recurse: no
         file_type: directory
         excludes: '3scale-operator,datagrid'
+      register: operators_to_delete
+
+    - name: tasks complete
+      debug:
+        msg: "LOG >> {{ operators_to_delete }}"
 
     # Leave this as the last task in the playbook.
     - name: tasks complete
