@@ -6,15 +6,22 @@
       debug:
         msg: "Building Catalog Source"
 
-    - name: Get the manifests
+    - name: Get all manifests
       command: >-
         oc adm catalog build 
           --appregistry-endpoint {{ appregistry_endpoint }} 
           --appregistry-org {{ appregistry_org }} 
-          --manifest-dir={{ inventory_dir }}/{{ appregistry_org }}-manifests
+          --manifest-dir="{{ inventory_dir }}/{{ appregistry_org }}-manifests"
       vars:
         appregistry_endpoint: "https://quay.io/cnr"
         appregistry_org: "redhat-operators"
+
+    - name: Find all Catalog sources to delete
+      find:
+        paths: "{{ inventory_dir }}/{{ appregistry_org }}-manifests"
+        recurse: no
+        file_type: directory
+        excludes: '3scale-operator,datagrid'
 
     # Leave this as the last task in the playbook.
     - name: tasks complete
