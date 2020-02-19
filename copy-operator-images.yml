@@ -1,0 +1,45 @@
+---
+- name: Copy Operator Images
+  hosts: localhost
+  vars_files:
+    vars/main.yml
+  tasks:
+    - name: Setting up workload for user
+      debug:
+        msg: "Copying Operator Images"
+
+    - name: find all the operators with clusterserviceversion.yaml files
+      find:
+        paths:
+          - "{{ inventory_dir }}/filtered-manifests"
+        recurse: yes
+        file_type: file
+        patterns:
+          - "*.clusterserviceversion.yaml"
+      register: clusterserviceversions
+    
+    - include_role:
+        name: create-organization-in-quay
+      loop: "{{ clusterserviceversions.files }}"
+      vars:
+        token: "{{ quay_application_token }}"
+        clusterserviceversion_file: "{{ item.path }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Disable the default OperatorSources
+      command: >-
+        oc patch OperatorHub cluster --type json
+          -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
+
+    - name: Mirror the contents of our catalog to our target registry
+      command: >-
+        oc adm catalog mirror 	
+          "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}:{{ registry_operator_tag }}" 
+          "{{ mirror_endpoint }}"
+          --to-manifests="{{ inventory_dir }}/copied-manifests"
+
+    # Leave this as the last task in the playbook.
+    - name: tasks complete
+      debug:
+        msg: "Copying Operator Images Tasks completed successfully."

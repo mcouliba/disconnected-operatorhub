@@ -1,0 +1,28 @@
+---
+- name: Configure OperatorHub
+  hosts: localhost
+  vars_files:
+    vars/main.yml
+  tasks:
+    - name: Setting up workload for user
+      debug:
+        msg: "Configuring OperatorHub"
+
+    - name: Defines the ImageContentSourcePolicy object that can configure nodes to translate between the image references stored in Operator manifests and the mirrored registry
+      command: >-
+        oc apply -f "{{ inventory_dir }}/copied-manifests"
+
+    - name: Create a CatalogSource object that references our catalog image
+      k8s:
+        state: present
+        merge_type:
+          - strategic-merge
+          - merge
+        definition: "{{ lookup('template', item ) | from_yaml }}"
+      loop:
+        - "{{ inventory_dir }}/templates/catalogsource.yml.j2"
+
+    # Leave this as the last task in the playbook.
+    - name: tasks complete
+      debug:
+        msg: "Configuring OperatorHub Tasks completed successfully."

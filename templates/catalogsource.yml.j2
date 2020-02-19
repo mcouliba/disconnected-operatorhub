@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: disconnected-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  image: "{{ mirror_endpoint }}"/"{{ registry_operator_org }}"/redhat-operators:v1 
+  displayName: Disconnected Operator Catalog
+  publisher: grpc

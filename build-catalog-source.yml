@@ -48,7 +48,7 @@
 
     - name: Build the Catalog Registry Image
       podman_image:
-        name: "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}"
+        name: "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}:{{ registry_operator_tag }}"
         path: "{{ inventory_dir }}"
         auth_file: "{{ inventory_dir }}/{{ local_secret_json }}"
         build:
