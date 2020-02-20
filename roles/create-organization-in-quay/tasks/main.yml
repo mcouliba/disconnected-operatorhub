@@ -1,4 +1,4 @@
-- name: Create Organization into Quay
+- name: Create '{{ organization_name }}' Organization into Quay
   uri:
     url: https://{{ mirror_endpoint }}/api/v1/organization/
     method: POST

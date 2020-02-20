@@ -46,6 +46,8 @@
       force_rm: yes
       rm: yes
     push: yes
+    push_args: 
+      format: v2s2
   register: result
   until: result.image is defined 
   retries: 2
