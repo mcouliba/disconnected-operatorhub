@@ -1,0 +1,89 @@
+= Disconnected OperatorHub for OCP4
+
+== Testing Environement
+
+This project has been testing using the following tools:
+
+* oc CLI 4.4.0-0.nightly-2020-02-19-044512
+* OCP 4.3+
+* ansible-playbook 2.9.4
+
+== Prerequisite
+
+
+== Configuration
+
+After cloning this project, edit the file `vars/main.yml` as following:
+
+appregistry_endpoint: "https://quay.io/cnr"
+appregistry_org: "redhat-operators"
+mirror_endpoint: "disconnected-operatorhub-quay-quay-enterprise.apps.cluster-munich-0184.munich-0184.example.opentlc.com"
+registry_operator_org: "disconnected-operatorhub"
+registry_operator_repo: "redhat-operators" 
+registry_operator_tag: "v1"
+local_secret_json: pull-secret.json
+quay_application_token: NoldPj2WmYbiZWxEKijgeSGCkwrKDVtGDSolgOE5
+operator_whitelists:
+  - 3scale-operator
+  - datagrid
+  - codeready-workspaces
+
+.vars/main.yml
+[%header,cols=2*]
+|===
+|Parameter
+|Description
+|Value (examples)
+
+|appregistry_endpoint
+|Endpoint for pulling from an application registry instance
+|https://quay.io/cnr
+
+|appregistry_org
+|Organization (Namespace) to pull from an application registry instance
+|redhat-operators
+
+|mirror_endpoint
+|Endpoint of the  Mirror Image Registry 
+|
+
+|registry_operator_org
+|Organization (Namespace) of the Disconnected OperatorHub registry
+|disconnected-operatorhub
+
+|registry_operator_repo
+|Repository of the Disconnected OperatorHub registry
+|redhat-operators
+
+|registry_operator_tag
+|Tag (version) of the Disconnected OperatorHub registry
+|v1
+
+|local_secret_json
+|Name of the file containing pull-secret for all needed registry
+|pull-secret.json
+
+|quay.as_a_mirror_registry
+|true if you are using Quay as a Mirror Registry 
+|true
+
+|quay.application_token
+|Application Token to access/read/write into your Quay Mirror Registry 
+|
+
+|operator_whitelists
+|Whitelists of the operator you want to deploy
+|   - 3scale-operator
+    - datagrid
+    - codeready-workspaces
+    
+|===
+
+== Deploy your Disconnecter OperatorHub
+
+- Deployment
+[source,bash]
+----
+ansible-playbook disconnect-operatorhub.yml
+----
+

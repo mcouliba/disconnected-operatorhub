@@ -1,18 +1,9 @@
-- name: Load the clusterserviceversion.yaml file as a fact
-  set_fact:
-    clusterserviceversion: "{{ lookup('file', clusterserviceversion_file) | from_yaml }}"
-
-- name: Extract Organization Name
-  shell: >-
-    grep containerImage {{ clusterserviceversion_file }} | cut -d: -f2 | cut -d/ -f2
-  register: organization_name
-
 - name: Create Organization into Quay
   uri:
     url: https://{{ mirror_endpoint }}/api/v1/organization/
     method: POST
     body:
-      name: "{{ organization_name.stdout }}"
+      name: "{{ organization_name }}"
       email: ""
     body_format: json
     headers:

@@ -17,10 +17,11 @@
     name: create-organization-in-quay
   loop: "{{ clusterserviceversions.files }}"
   vars:
-    token: "{{ quay_application_token }}"
+    token: "{{ quay.application_token }}"
     clusterserviceversion_file: "{{ item.path }}"
   loop_control:
     label: "{{ item.path }}"
+  when: quay.as_a_mirror_registry
 
 - name: Disable the default OperatorSources
   command: >-

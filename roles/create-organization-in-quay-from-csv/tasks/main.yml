@@ -1,0 +1,17 @@
+- name: Load the clusterserviceversion.yaml file as a fact
+  set_fact:
+    clusterserviceversion: "{{ lookup('file', clusterserviceversion_file) | from_yaml }}"
+
+- name: Extract Organization Name
+  shell: >-
+    grep containerImage {{ clusterserviceversion_file }} | cut -d: -f2 | cut -d/ -f2
+  register: organization_name
+
+- include_role:
+    name: create-organization-in-quay
+  vars:
+    organization_name: "{{ organization_name.stdout }}"
+  loop: "{{ clusterserviceversions.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+

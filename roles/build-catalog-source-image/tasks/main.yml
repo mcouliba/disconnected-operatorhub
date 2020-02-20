@@ -30,6 +30,15 @@
   with_items: 
     - "{{ operators_to_deploy.files }}"
 
+- include_role:
+    name: create-organization-in-quay
+  vars:
+    organization_name: "{{ registry_operator_org }}"
+    token: "{{ quay.application_token }}"
+  loop: "{{ clusterserviceversions.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  
 - name: Build the Catalog Registry Image
   podman_image:
     name: "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}:{{ registry_operator_tag }}"
