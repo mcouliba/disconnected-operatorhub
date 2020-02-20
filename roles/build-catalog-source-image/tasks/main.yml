@@ -37,7 +37,7 @@
     token: "{{ quay.application_token }}"
   when: quay.as_a_mirror_registry
 
-- name: Build the Catalog Registry Image
+- name: Build the Catalog Registry Image with 'oci' format
   podman_image:
     name: "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}:{{ registry_operator_tag }}"
     path: "{{ inventory_dir }}"
@@ -46,12 +46,29 @@
       cache: no
       force_rm: yes
       rm: yes
+      format: oci
     push: yes
-    push_args: 
-      format: v2s2
   register: result
   until: result.image is defined 
   retries: 2
+  when: quay.as_a_mirror_registry
+
+- name: Build the Catalog Registry Image with 'docker' format
+  podman_image:
+    name: "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}:{{ registry_operator_tag }}"
+    path: "{{ inventory_dir }}"
+    auth_file: "{{ inventory_dir }}/{{ local_secret_json }}"
+    build:
+      cache: no
+      force_rm: yes
+      rm: yes
+      format: docker
+    push: yes
+  register: result
+  until: result.image is defined
+  retries: 2
+  when: not quay.as_a_mirror_registry
+
 
 # Leave this as the last task in the playbook.
 - name: tasks complete
