@@ -2,13 +2,11 @@ appregistry_endpoint: "https://quay.io/cnr"
 appregistry_org: "redhat-operators"
 mirror_endpoint: "disconnected-operatorhub-quay-quay-enterprise.apps.cluster-munich-0184.munich-0184.example.opentlc.com"
 registry_operator_org: "disconnected-operatorhub"
-registry_operator_repo: "redhat-operators" 
-registry_operator_tag: "v1"
+registry_operator_repo: "disconnected-redhat-operators" 
+registry_operator_tag: "v2"
 local_secret_json: pull-secret.json
 quay:
-  as_a_mirror_registry: false
+  as_a_mirror_registry: true
   application_token: NoldPj2WmYbiZWxEKijgeSGCkwrKDVtGDSolgOE5
 operator_whitelists:
-  - 3scale-operator
-  - datagrid
-  - codeready-workspaces
+  - ptp-operator 

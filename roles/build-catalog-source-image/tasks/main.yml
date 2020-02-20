@@ -35,9 +35,6 @@
   vars:
     organization_name: "{{ registry_operator_org }}"
     token: "{{ quay.application_token }}"
-  loop: "{{ clusterserviceversions.files }}"
-  loop_control:
-    label: "{{ item.path }}"
   
 - name: Build the Catalog Registry Image
   podman_image:

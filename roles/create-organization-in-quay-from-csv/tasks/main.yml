@@ -5,12 +5,12 @@
 - name: Extract Organization Name
   shell: >-
     grep containerImage {{ clusterserviceversion_file }} | cut -d: -f2 | cut -d/ -f2
-  register: organization_name
+  register: csv_organization_name
 
 - include_role:
     name: create-organization-in-quay
   vars:
-    organization_name: "{{ organization_name.stdout }}"
+    organization_name: "{{ csv_organization_name.stdout }}"
   loop: "{{ clusterserviceversions.files }}"
   loop_control:
     label: "{{ item.path }}"

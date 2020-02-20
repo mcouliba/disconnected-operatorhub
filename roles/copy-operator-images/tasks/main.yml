@@ -14,7 +14,7 @@
   register: clusterserviceversions
     
 - include_role:
-    name: create-organization-in-quay
+    name: create-organization-in-quay-from-csv
   loop: "{{ clusterserviceversions.files }}"
   vars:
     token: "{{ quay.application_token }}"
