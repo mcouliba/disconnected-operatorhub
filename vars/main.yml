@@ -6,7 +6,7 @@ registry_operator_repo: "disconnected-redhat-operators"
 registry_operator_tag: "v3"
 local_secret_json: pull-secret.json
 quay:
-  as_a_mirror_registry: true
+  as_a_mirror_registry: false
   application_token: NoldPj2WmYbiZWxEKijgeSGCkwrKDVtGDSolgOE5
 operator_whitelists:
   - eap

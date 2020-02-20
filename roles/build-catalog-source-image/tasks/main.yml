@@ -35,7 +35,8 @@
   vars:
     organization_name: "{{ registry_operator_org }}"
     token: "{{ quay.application_token }}"
-  
+  when: quay.as_a_mirror_registry
+
 - name: Build the Catalog Registry Image
   podman_image:
     name: "{{ mirror_endpoint }}/{{ registry_operator_org }}/{{ registry_operator_repo }}:{{ registry_operator_tag }}"
