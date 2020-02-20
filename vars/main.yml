@@ -6,3 +6,7 @@ registry_operator_repo: "redhat-operators"
 registry_operator_tag: "v1"
 local_secret_json: pull-secret.json
 quay_application_token: NoldPj2WmYbiZWxEKijgeSGCkwrKDVtGDSolgOE5
+operator_whitelists:
+  - 3scale-operator
+  - datagrid
+  - codeready-workspaces

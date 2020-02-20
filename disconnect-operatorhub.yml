@@ -1,0 +1,33 @@
+---
+- name: Disconnect your OperatorHub
+  hosts: localhost
+  vars_files:
+    vars/main.yml
+  tasks:
+    - name: Cleaning up manifest dir
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ inventory_dir }}/{{ appregistry_org }}"
+        - "{{ inventory_dir }}/filtered-manifests"
+        - "{{ inventory_dir }}/copied-manifests"
+        - "{{ inventory_dir }}/catalogsource.yml"
+
+    - name: Setting up workload for user
+      debug:
+        msg: "Disconnecting OperatorHub"
+
+    - include_role:
+        name: build-catalog-source-image
+
+    - include_role:
+        name: copy-operator-images
+
+    - include_role:
+        name: configure-operator-hub
+
+    # Leave this as the last task in the playbook.
+    - name: tasks complete
+      debug:
+        msg: "Disconnnecting OperatorHub Tasks completed successfully."
