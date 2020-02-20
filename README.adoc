@@ -16,7 +16,7 @@ This project has been testing using the following tools:
 After cloning this project, edit the file `vars/main.yml` as following:
 
 .vars/main.yml
-[%header,cols=2*]
+[%header,cols=3*]
 |===
 |Parameter
 |Description
